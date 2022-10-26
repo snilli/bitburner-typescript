@@ -1,6 +1,6 @@
-import { NS } from '@ns';
+import { NS } from '@ns'
 
 export async function main(ns: NS): Promise<void> {
-  const host: string = <string>ns.args[0];
-  await ns.hack(host);
+	const host: string = <string>ns.args[0]
+	await ns.hack(host)
 }

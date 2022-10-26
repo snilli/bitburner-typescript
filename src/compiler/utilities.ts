@@ -1,17 +1,17 @@
-import { NS, Server, Player } from '@ns';
-import { ServerInfo } from '/lib/server';
+import { NS, Player, Server } from '@ns'
+import { ServerInfo } from '/lib/server'
 
 /**
  * It generates a random string of 16 characters.
  * @returns A string of 16 random characters.
  */
 export function generateRandomString(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < 16; i += 1) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
+	const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+	let result = ''
+	for (let i = 0; i < 16; i += 1) {
+		result += chars.charAt(Math.floor(Math.random() * chars.length))
+	}
+	return result
 }
 
 /**
@@ -24,14 +24,14 @@ export function generateRandomString(): string {
  * @returns an array of all servers names
  */
 export function getServersList(ns: NS, currentServer = 'home', set = new Set<string>()): string[] {
-  let serverConnections: string[] = ns.scan(currentServer);
-  serverConnections = serverConnections.filter((s) => !set.has(s));
-  serverConnections.forEach((server) => {
-    set.add(server);
-    return getServersList(ns, server, set);
-  });
+	let serverConnections: string[] = ns.scan(currentServer)
+	serverConnections = serverConnections.filter((s) => !set.has(s))
+	serverConnections.forEach((server) => {
+		set.add(server)
+		return getServersList(ns, server, set)
+	})
 
-  return Array.from(set.keys());
+	return Array.from(set.keys())
 }
 
 /**
@@ -40,14 +40,14 @@ export function getServersList(ns: NS, currentServer = 'home', set = new Set<str
  * @returns An array of ServerInfo objects.
  */
 export function getServersInfos(ns: NS): ServerInfo[] {
-  const servers = getServersList(ns);
-  const serversData = [];
+	const servers = getServersList(ns)
+	const serversData = []
 
-  for (const server of servers) {
-    serversData.push(new ServerInfo(ns, server));
-  }
+	for (const server of servers) {
+		serversData.push(new ServerInfo(ns, server))
+	}
 
-  return serversData;
+	return serversData
 }
 
 /**
@@ -61,23 +61,23 @@ export function getServersInfos(ns: NS): ServerInfo[] {
  * @returns The route from source to target.
  */
 export function findServer(ns: NS, source: string, target: string, servers: string[]): string[] {
-  servers.push(source);
+	servers.push(source)
 
-  for (const server of ns.scan(source)) {
-    if (server === target) {
-      servers.push(server);
-      return servers;
-    }
+	for (const server of ns.scan(source)) {
+		if (server === target) {
+			servers.push(server)
+			return servers
+		}
 
-    if (!servers.includes(server)) {
-      const route = findServer(ns, server, target, servers.slice());
-      if (route[route.length - 1] === target) {
-        return route;
-      }
-    }
-  }
+		if (!servers.includes(server)) {
+			const route = findServer(ns, server, target, servers.slice())
+			if (route[route.length - 1] === target) {
+				return route
+			}
+		}
+	}
 
-  return servers;
+	return servers
 }
 
 /**
@@ -88,20 +88,20 @@ export function findServer(ns: NS, source: string, target: string, servers: stri
  * @returns The chance of hacking a server.
  */
 export function calculateHackingChance(server: ServerInfo, player: Player): number {
-  const hackFactor = 1.75;
-  const difficultyMult = (100 - server.security.level) / 100;
-  const skillMult = hackFactor * player.hacking;
-  const skillChance = (skillMult - server.hackLevel) / skillMult;
-  const chance = skillChance * difficultyMult * player.hacking_chance_mult;
+	const hackFactor = 1.75
+	const difficultyMult = (100 - server.security.level) / 100
+	const skillMult = hackFactor * player.hacking
+	const skillChance = (skillMult - server.hackLevel) / skillMult
+	const chance = skillChance * difficultyMult * player.hacking_chance_mult
 
-  if (chance > 1) {
-    return 1;
-  }
-  if (chance < 0) {
-    return 0;
-  }
+	if (chance > 1) {
+		return 1
+	}
+	if (chance < 0) {
+		return 0
+	}
 
-  return chance;
+	return chance
 }
 
 /**
@@ -111,7 +111,7 @@ export function calculateHackingChance(server: ServerInfo, player: Player): numb
  * @returns true if player hacking level is higher than the server required skill.
  */
 export function canHack(ns: NS, server: Server): boolean {
-  return ns.getHackingLevel() >= server.requiredHackingSkill;
+	return ns.getHackingLevel() >= server.requiredHackingSkill
 }
 
 /**
@@ -121,35 +121,38 @@ export function canHack(ns: NS, server: Server): boolean {
  * @returns The server with the highest hacking chance / max money
  */
 export function findBestServerToHack(ns: NS): string {
-  const player = ns.getPlayer();
-  const serversData = getServersInfos(ns);
+	const player = ns.getPlayer()
+	const serversData = getServersInfos(ns)
 
-  const data = serversData.filter((server) => !server.purchased && server.hackLevel <= ns.getHackingLevel() && server.money.max > 0);
+	const data = serversData.filter(
+		(server) => !server.purchased && server.hackLevel <= ns.getHackingLevel() && server.money.max > 0,
+	)
 
-  const serverDetails = [];
+	const serverDetails = []
 
-  for (const server of data) {
-    const serverName = server.hostname;
-    const chance: number = Math.round(((calculateHackingChance(server, player) * 100) + Number.EPSILON) * 100) / 100;
-    const maxMoney = server.money.max;
-    serverDetails.push({
-      name: serverName,
-      hackingChance: chance,
-      money: maxMoney,
-    });
-  }
+	for (const server of data) {
+		const serverName = server.hostname
+		const chance: number =
+			Math.round((calculateHackingChance(server, player) * 100 + Number.EPSILON) * 100) / 100
+		const maxMoney = server.money.max
+		serverDetails.push({
+			name: serverName,
+			hackingChance: chance,
+			money: maxMoney,
+		})
+	}
 
-  const bestServer = serverDetails.reduce((prev, curr) => {
-    if (prev.hackingChance > curr.hackingChance) return prev;
+	const bestServer = serverDetails.reduce((prev, curr) => {
+		if (prev.hackingChance > curr.hackingChance) return prev
 
-    if (prev.hackingChance === curr.hackingChance) {
-      if (prev.money > curr.money) {
-        return prev;
-      }
-      return curr;
-    }
-    return curr;
-  });
+		if (prev.hackingChance === curr.hackingChance) {
+			if (prev.money > curr.money) {
+				return prev
+			}
+			return curr
+		}
+		return curr
+	})
 
-  return bestServer.name;
+	return bestServer.name
 }

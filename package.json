@@ -1,21 +1,21 @@
 {
-  "name": "bitburner-abyo",
-  "version": "0.1.0",
-  "scripts": {
-    "tsc": "npx tsc",
-    "lint": "eslint . --ext .ts",
-    "sync": "bitburner-sync",
-    "compile": "yarn lint && yarn tsc && yarn sync"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.18.0",
-    "@typescript-eslint/parser": "^5.18.0",
-    "bitburner-sync": "^1.3.0",
-    "eslint": "^8.12.0",
-    "eslint-config-airbnb-typescript": "^17.0.0",
-    "eslint-import-resolver-typescript": "^2.7.1",
-    "eslint-plugin-import": "^2.25.4",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.6.3"
-  }
+	"name": "bitburner-snilli",
+	"version": "0.1.0",
+	"scripts": {
+		"tsc": "npx tsc",
+		"lint": "eslint . --ext .ts",
+		"sync": "dotenv -e .env && bitburner-sync",
+		"compile": "yarn lint && yarn tsc && yarn sync"
+	},
+	"devDependencies": {
+		"bitburner-sync": "^1.5.3",
+		"rimraf": "^3.0.2",
+		"typescript": "^4.8.4",
+		"eslint": "^8.26.0",
+		"prettier": "^2.7.1",
+		"dotenv-cli": "^6.0.0",
+		"eslint-config-prettier": "^8.5.0",
+		"@typescript-eslint/eslint-plugin": "^5.41.0",
+		"@typescript-eslint/parser": "^5.41.0"
+	}
 }
