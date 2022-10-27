@@ -31,7 +31,7 @@ interface ServerMoney {
 const reservedRam = 10
 
 export class ServerInfo {
-	constructor(public ns: NS, public host: string) {
+	constructor(private ns: NS, public host: string) {
 		this.ns = ns
 		this.host = host
 	}

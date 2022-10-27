@@ -34,7 +34,7 @@ export async function main(ns: NS): Promise<void> {
 
 				if (target.security.level > securityThreshold) {
 					weakenThreads = Math.min(availableThreads, weakenThreads)
-					if (weakenThreads > 0 && canHack)
+					if (weakenThreads && canHack)
 						ns.exec(
 							'bin/loop/weaken.js',
 							server.hostname,

@@ -19,6 +19,7 @@ module.exports = {
 	root: true,
 	plugins: ['@typescript-eslint/eslint-plugin'],
 	rules: {
+		'no-constant-condition': ['error', { checkLoops: false }],
 		'@typescript-eslint/interface-name-prefix': 'off',
 		'@typescript-eslint/explicit-function-return-type': 'off',
 		'@typescript-eslint/explicit-module-boundary-types': 'off',

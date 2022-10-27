@@ -4,7 +4,7 @@
 	"scripts": {
 		"tsc": "npx tsc",
 		"lint": "eslint . --ext .ts",
-		"sync": "dotenv -e .env && bitburner-sync",
+		"sync": "bitburner-sync",
 		"compile": "yarn lint && yarn tsc && yarn sync"
 	},
 	"devDependencies": {

@@ -3,8 +3,8 @@ import { NS } from '@ns'
 const runtimeMultiplier = 3.2
 
 export async function main(ns: NS): Promise<void> {
-	const host: string = <string>ns.args[0]
-	const batchLand: number = <number>ns.args[1]
+	const host = ns.args[0].toString()
+	const batchLand = Number(ns.args[1])
 
 	const runtime = runtimeMultiplier * ns.getHackTime(host)
 

@@ -19,7 +19,7 @@ export async function main(ns: NS): Promise<void> {
 				let availableThreads = server.calculateThreadCount(1.75)
 
 				if (server.security.level > securityThreshold) {
-					if (availableThreads > 0 && canHack)
+					if (availableThreads && canHack)
 						ns.exec(
 							'bin/loop/weaken.js',
 							server.hostname,
@@ -27,7 +27,7 @@ export async function main(ns: NS): Promise<void> {
 							server.hostname,
 						)
 				} else if (server.money.available < moneyThreshold) {
-					if (availableThreads > 0 && canHack)
+					if (availableThreads && canHack)
 						ns.exec(
 							'bin/loop/grow.js',
 							server.hostname,
@@ -36,7 +36,7 @@ export async function main(ns: NS): Promise<void> {
 						)
 				} else {
 					availableThreads = server.calculateThreadCount(1.7)
-					if (availableThreads > 0 && canHack)
+					if (availableThreads && canHack)
 						ns.exec(
 							'bin/loop/hack.js',
 							server.hostname,
