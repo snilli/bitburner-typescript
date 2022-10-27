@@ -1,10 +1,15 @@
-import { NS } from '@ns'
+import { NodeStats, NS } from '@ns'
+
+interface NodeInfo extends NodeStats {
+	score: number
+	index: number
+}
 
 export async function main(ns: NS): Promise<void> {
-	const nodeUpdateScore = (node) => {
+	const nodeUpdateScore = (node: NodeInfo) => {
 		node.score = node.cores * 10 + node.ram + node.level
 	}
-	const sortNode = (a, b) => {
+	const sortNode = (a: NodeInfo, b: NodeInfo) => {
 		// return a.level - b.level ||
 		// 	a.ram - b.ram ||
 		// 	a.cores - b.cores ||
@@ -17,7 +22,7 @@ export async function main(ns: NS): Promise<void> {
 		const nodes = []
 		let ownNodes = ns.hacknet.numNodes()
 		for (let i = 0; i < ownNodes; i++) {
-			const node = ns.hacknet.getNodeStats(i)
+			const node = ns.hacknet.getNodeStats(i) as NodeInfo
 			node.index = i
 			nodeUpdateScore(node)
 			nodes.push(node)
@@ -28,7 +33,7 @@ export async function main(ns: NS): Promise<void> {
 			const newNode = ns.hacknet.purchaseNode()
 			if (newNode) {
 				ownNodes = newNode
-				const node = ns.hacknet.getNodeStats(ownNodes)
+				const node = ns.hacknet.getNodeStats(ownNodes) as NodeInfo
 				node.index = ownNodes
 				nodes.unshift(node)
 			}
