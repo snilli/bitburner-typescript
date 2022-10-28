@@ -8,14 +8,14 @@
 		"compile": "yarn lint && yarn tsc && yarn sync"
 	},
 	"devDependencies": {
-		"bitburner-sync": "^1.5.3",
-		"rimraf": "^3.0.2",
-		"typescript": "^4.8.4",
-		"eslint": "^8.26.0",
-		"prettier": "^2.7.1",
-		"dotenv-cli": "^6.0.0",
-		"eslint-config-prettier": "^8.5.0",
 		"@typescript-eslint/eslint-plugin": "^5.41.0",
-		"@typescript-eslint/parser": "^5.41.0"
+		"@typescript-eslint/parser": "^5.41.0",
+		"bitburner-sync": "^1.5.3",
+		"dotenv-cli": "^6.0.0",
+		"eslint": "^8.26.0",
+		"eslint-config-prettier": "^8.5.0",
+		"prettier": "^2.7.1",
+		"rimraf": "^3.0.2",
+		"typescript": "^4.8.4"
 	}
 }

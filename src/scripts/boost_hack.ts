@@ -3,15 +3,15 @@ import { getServersInfos } from '/compiler/utilities'
 
 export async function main(ns: NS): Promise<void> {
 	ns.disableLog('sleep')
-	const serversData = getServersInfos(ns)
+	const serversData = Array.from(getServersInfos(ns))
 
-	for (const server of serversData) {
+	for (const [, server] of serversData) {
 		await ns.scp(['/bin/loop/grow.js', '/bin/loop/weaken.js', '/bin/loop/hack.js'], 'home', server.hostname)
 		await ns.sleep(10)
 	}
 
 	while (true) {
-		for (const server of serversData) {
+		for (const [, server] of serversData) {
 			if (server.admin) {
 				const moneyThreshold = server.money.max * 0.75
 				const securityThreshold = server.security.min + 5

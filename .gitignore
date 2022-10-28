@@ -3,3 +3,4 @@ dist/
 bitburner-sync.json
 yarn.lock
 package-lock.json
+.yarn

@@ -4,10 +4,10 @@ import { ServerInfo } from '/lib/server'
 
 export async function main(ns: NS): Promise<void> {
 	ns.disableLog('sleep')
-	const serversData = getServersInfos(ns)
+	const serversData = Array.from(getServersInfos(ns))
 	const target: ServerInfo = new ServerInfo(ns, findBestServerToHack(ns))
 
-	for (const server of serversData) {
+	for (const [, server] of serversData) {
 		await ns.scp(['/bin/loop/grow.js', '/bin/loop/weaken.js', '/bin/loop/hack.js'], 'home', server.hostname)
 		await ns.sleep(10)
 	}
@@ -16,7 +16,7 @@ export async function main(ns: NS): Promise<void> {
 	const securityThreshold = target.security.min + 5
 
 	while (true) {
-		for (const server of serversData) {
+		for (const [, server] of serversData) {
 			if (server.admin && target.admin) {
 				let targetMoney = target.money.available
 				if (targetMoney <= 0) targetMoney = 1

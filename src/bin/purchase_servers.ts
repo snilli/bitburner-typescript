@@ -12,12 +12,12 @@ function buyServer(ns: NS, ram: number): string {
 }
 
 export function main(ns: NS): void {
-	const serversData = getServersInfos(ns)
+	const serversData = Array.from(getServersInfos(ns))
 
-	const serversPurchased = serversData.filter((server) => server.purchased)
+	const serversPurchased = serversData.filter(([, server]) => server.purchased)
 
 	if (ns.args[0] === 2 || ns.args[0] === 3 || ns.args[0] === 4 || ns.args[0] === 5 || ns.args[0] === 6) {
-		for (const server of serversPurchased) {
+		for (const [, server] of serversPurchased) {
 			ns.killall(server.hostname)
 			removeServer(ns, server.hostname)
 		}

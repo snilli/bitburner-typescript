@@ -14,52 +14,30 @@ export function generateRandomString(): string {
 	return result
 }
 
-/**
- * The function takes the current server and a set of servers. It then scans the current
- * server for connections, filters out connections that are already in the set, then adds all new
- * connections to it
- * @param {NS} ns - Netscript API.
- * @param {string} currentServer - the current server you're on
- * @param set - a set of all servers that have been visited
- * @returns an array of all servers names
- */
-export function getServersList(ns: NS, currentServer = 'home', set = new Set<string>()): string[] {
-	let serverConnections: string[] = ns.scan(currentServer)
-	serverConnections = serverConnections.filter((s) => !set.has(s))
-	serverConnections.forEach((server) => {
-		set.add(server)
-		return getServersList(ns, server, set)
-	})
-
-	return Array.from(set.keys())
-}
-
-/**
- * Convert server list into an array of ServerInfo objects
- * @param {NS} ns - Netscript API
- * @returns An array of ServerInfo objects.
- */
-export function getServersInfos(ns: NS): ServerInfo[] {
-	const servers = getServersList(ns)
-	const serversData = []
-
-	for (const server of servers) {
-		serversData.push(new ServerInfo(ns, server))
+export function getAllServer(ns: NS, currentServer = 'home', serverSet = new Set<string>()): Set<string> {
+	const serverConnections = ns.scan(currentServer)
+	while (serverConnections.length) {
+		for (const server of serverConnections) {
+			if (serverSet.has(server)) {
+				continue
+			}
+			serverSet.add(server)
+			getAllServer(ns, server, serverSet)
+		}
 	}
 
-	return serversData
+	return serverSet
 }
 
-/**
- * It recursively scans the network for the target server
- * and returns the route it took to get there
- * https://github.com/tyrope/bitburner/blob/master/lib/netLib.js#L30-L59
- * @param {NS} ns - The NS object
- * @param {string} source - The server you're currently on.
- * @param {string} target - The server you want to hack
- * @param {string[]} servers - The list of servers you have access to.
- * @returns The route from source to target.
- */
+export function getServersInfos(ns: NS): Map<string, ServerInfo> {
+	const serverMap = new Map<string, ServerInfo>()
+	for (const [server] of getAllServer(ns).entries()) {
+		serverMap.set(server, new ServerInfo(ns, server))
+	}
+
+	return serverMap
+}
+
 export function findServer(ns: NS, source: string, target: string, servers: string[]): string[] {
 	servers.push(source)
 
@@ -122,15 +100,15 @@ export function canHack(ns: NS, server: Server): boolean {
  */
 export function findBestServerToHack(ns: NS): string {
 	const player = ns.getPlayer()
-	const serversData = getServersInfos(ns)
+	const serversData = Array.from(getServersInfos(ns))
 
-	const data = serversData.filter(
-		(server) => !server.purchased && server.hackLevel <= ns.getHackingLevel() && server.money.max > 0,
+	const servers = serversData.filter(
+		([, server]) => !server.purchased && server.hackLevel <= ns.getHackingLevel() && server.money.max > 0,
 	)
 
 	const serverDetails = []
 
-	for (const server of data) {
+	for (const [, server] of servers) {
 		const serverName = server.hostname
 		const chance: number =
 			Math.round((calculateHackingChance(server, player) * 100 + Number.EPSILON) * 100) / 100
