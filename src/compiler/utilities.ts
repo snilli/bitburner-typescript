@@ -66,9 +66,9 @@ export function findServer(ns: NS, source: string, target: string, servers: stri
 export function calculateHackingChance(server: ServerInfo, player: Player): number {
 	const hackFactor = 1.75
 	const difficultyMult = (100 - server.security.level) / 100
-	const skillMult = hackFactor * player.hacking
+	const skillMult = hackFactor * (player.mults.hacking ?? 0)
 	const skillChance = (skillMult - server.hackLevel) / skillMult
-	const chance = skillChance * difficultyMult * player.hacking_chance_mult
+	const chance = skillChance * difficultyMult * (player.mults.hacking_chance ?? 0)
 
 	if (chance > 1) {
 		return 1

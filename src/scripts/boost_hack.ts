@@ -6,7 +6,7 @@ export async function main(ns: NS): Promise<void> {
 	const serversData = Array.from(getServersInfos(ns))
 
 	for (const [, server] of serversData) {
-		await ns.scp(['/bin/loop/grow.js', '/bin/loop/weaken.js', '/bin/loop/hack.js'], 'home', server.hostname)
+		ns.scp(['/bin/loop/grow.js', '/bin/loop/weaken.js', '/bin/loop/hack.js'], 'home', server.hostname)
 		await ns.sleep(10)
 	}
 

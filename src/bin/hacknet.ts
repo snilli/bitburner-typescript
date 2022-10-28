@@ -57,7 +57,7 @@ function calcMedianNodeRate(ns: NS, nodes: number[]): number {
 		medianLevel,
 		medianRam,
 		medianCore,
-		ns.getPlayer().hacknet_node_money_mult,
+		ns.getPlayer().mults.hacknet_node_money ?? 0,
 	)
 
 	return nodeMedianRate
@@ -69,7 +69,7 @@ export async function main(ns: NS): Promise<void> {
 
 	while (totalNodes < 26) {
 		totalNodes = ns.hacknet.numNodes()
-		const playerMult = ns.getPlayer().hacknet_node_money_mult
+		const playerMult = ns.getPlayer().mults.hacknet_node_money ?? 0
 		const playerMoney = ns.getPlayer().money
 		const nodes = range(0, ns.hacknet.numNodes())
 		const nodeStats = []
