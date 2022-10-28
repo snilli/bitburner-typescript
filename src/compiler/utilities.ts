@@ -16,14 +16,12 @@ export function generateRandomString(): string {
 
 export function getAllServer(ns: NS, currentServer = 'home', serverSet = new Set<string>()): Set<string> {
 	const serverConnections = ns.scan(currentServer)
-	while (serverConnections.length) {
-		for (const server of serverConnections) {
-			if (serverSet.has(server)) {
-				continue
-			}
-			serverSet.add(server)
-			getAllServer(ns, server, serverSet)
+	for (const server of serverConnections) {
+		if (serverSet.has(server)) {
+			continue
 		}
+		serverSet.add(server)
+		getAllServer(ns, server, serverSet)
 	}
 
 	return serverSet
