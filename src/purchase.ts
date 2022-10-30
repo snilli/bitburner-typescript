@@ -24,7 +24,7 @@ export async function main(ns: NS): Promise<void> {
 			}
 
 			if (!ns.fileExists(scriptName, hostname)) {
-				await ns.scp(scriptName, hostname)
+				ns.scp(scriptName, hostname)
 			}
 			const threads = Math.floor(ram / scriptUsageRam)
 			ns.exec(scriptName, hostname, threads, targetHost)

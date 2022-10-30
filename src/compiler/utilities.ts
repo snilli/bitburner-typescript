@@ -27,9 +27,13 @@ export function getAllServer(ns: NS, currentServer = 'home', serverSet = new Set
 	return serverSet
 }
 
-export function getServersInfos(ns: NS): Map<string, ServerInfo> {
+export function getServersInfos(ns: NS, withHome = false): Map<string, ServerInfo> {
 	const serverMap = new Map<string, ServerInfo>()
 	for (const [server] of getAllServer(ns).entries()) {
+		if (!withHome && server === 'home') {
+			continue
+		}
+
 		serverMap.set(server, new ServerInfo(ns, server))
 	}
 
@@ -111,6 +115,9 @@ export function findBestServerToHack(ns: NS): string {
 		const chance: number =
 			Math.round((calculateHackingChance(server, player) * 100 + Number.EPSILON) * 100) / 100
 		const maxMoney = server.money.max
+		if (!server.admin) {
+			continue
+		}
 		serverDetails.push({
 			name: serverName,
 			hackingChance: chance,

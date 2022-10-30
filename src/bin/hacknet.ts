@@ -8,11 +8,9 @@ import { NS } from '@ns'
  * @returns An array of numbers from start to end, with a step of 1.
  */
 function range(start: number, end: number, step = 1): number[] {
-	const arr = []
-	for (let i = start; i < end; i += step) {
-		arr.push(i)
-	}
-	return arr
+	return Array.from(Array(end - start).keys())
+		.filter((_, idx) => idx % step === 0)
+		.map((v) => v + start)
 }
 
 /**
@@ -37,38 +35,32 @@ function calcHnetMoneyRate(level: number, ram: number, cores: number, mult: numb
  * @returns The median rate of the nodes.
  */
 function calcMedianNodeRate(ns: NS, nodes: number[]): number {
-	const totalLevel: number[] = []
-	const totalRam: number[] = []
-	const totalCore: number[] = []
+	let totalLevel = 0
+	let totalRam = 0
+	let totalCore = 0
 	const nodesNumber: number = ns.hacknet.numNodes()
 
 	for (const node of nodes) {
-		const { level, ram, cores } = ns.hacknet.getNodeStats(node)
-		totalLevel.push(level)
-		totalRam.push(ram)
-		totalCore.push(cores)
+		const nodeStat = ns.hacknet.getNodeStats(node)
+		totalLevel += nodeStat.level
+		totalRam += nodeStat.ram
+		totalCore += nodeStat.cores
 	}
 
-	const medianLevel = totalLevel.reduce((a, b) => a + b, 0) / nodesNumber
-	const medianRam = totalRam.reduce((a, b) => a + b, 0) / nodesNumber
-	const medianCore = totalCore.reduce((a, b) => a + b, 0) / nodesNumber
-
-	const nodeMedianRate = calcHnetMoneyRate(
-		medianLevel,
-		medianRam,
-		medianCore,
+	return calcHnetMoneyRate(
+		totalLevel / nodesNumber,
+		totalRam / nodesNumber,
+		totalCore / nodesNumber,
 		ns.getPlayer().mults.hacknet_node_money ?? 0,
 	)
-
-	return nodeMedianRate
 }
 
 export async function main(ns: NS): Promise<void> {
 	ns.disableLog('sleep')
-	let totalNodes = ns.hacknet.numNodes()
 
-	while (totalNodes < 26) {
-		totalNodes = ns.hacknet.numNodes()
+	// while (totalNodes < 26) {
+	while (true) {
+		// const totalNodes = ns.hacknet.numNodes()
 		const playerMult = ns.getPlayer().mults.hacknet_node_money ?? 0
 		const playerMoney = ns.getPlayer().money
 		const nodes = range(0, ns.hacknet.numNodes())

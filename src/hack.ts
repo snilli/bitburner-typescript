@@ -87,7 +87,7 @@ export async function main(ns: NS): Promise<void> {
 			if (!ns.isRunning(scriptName, host, targetHost)) {
 				ns.scriptKill(scriptName, host)
 				ns.rm(scriptName, host)
-				await ns.scp(scriptName, host)
+				ns.scp(scriptName, host)
 				ns.exec(scriptName, host, threads, targetHost)
 			}
 			// const server = ns.getServer(host)

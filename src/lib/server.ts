@@ -10,6 +10,15 @@ interface ServerPorts {
 	ssh: boolean
 }
 
+interface ServerProgram {
+	ftp: boolean
+	http: boolean
+	smtp: boolean
+	sql: boolean
+	ssh: boolean
+	available: number
+}
+
 interface ServerRam {
 	used: number
 	max: number
@@ -38,6 +47,38 @@ export class ServerInfo {
 
 	get data(): Server {
 		return this.ns.getServer(this.host)
+	}
+	get programs(): ServerProgram {
+		const program = {
+			ftp: false,
+			http: false,
+			smtp: false,
+			sql: false,
+			ssh: false,
+			available: 0,
+		}
+		if (this.ns.fileExists('FTPCrack.exe')) {
+			program.ftp = true
+			program.available += 1
+		}
+		if (this.ns.fileExists('HTTPWorm.exe')) {
+			program.http = true
+			program.available += 1
+		}
+		if (this.ns.fileExists('relaySMTP.exe')) {
+			program.smtp = true
+			program.available += 1
+		}
+		if (this.ns.fileExists('SQLInject.exe')) {
+			program.sql = true
+			program.available += 1
+		}
+		if (this.ns.fileExists('BruteSSH.exe')) {
+			program.ssh = true
+			program.available += 1
+		}
+
+		return program
 	}
 	get admin(): boolean {
 		return this.data.hasAdminRights
@@ -110,21 +151,36 @@ export class ServerInfo {
 		return Math.floor(this.ram.free / scriptRamUsage)
 	}
 
-	penetrate(): void {
+	penetrate(): boolean {
 		try {
-			this.ns.nuke(this.hostname)
-		} catch (e) {
-			this.ns.print(e)
-		}
+			const ports = this.ports
+			const programs = this.programs
+			if (programs.available < ports.open) {
+				return false
+			}
 
-		try {
-			this.ns.brutessh(this.hostname)
-			this.ns.ftpcrack(this.hostname)
-			this.ns.relaysmtp(this.hostname)
-			this.ns.httpworm(this.hostname)
-			this.ns.sqlinject(this.hostname)
+			if (programs.ftp) {
+				this.ns.ftpcrack(this.hostname)
+			}
+			if (programs.ssh) {
+				this.ns.brutessh(this.hostname)
+			}
+			if (programs.smtp) {
+				this.ns.relaysmtp(this.hostname)
+			}
+			if (programs.http) {
+				this.ns.httpworm(this.hostname)
+			}
+			if (programs.sql) {
+				this.ns.sqlinject(this.hostname)
+			}
+
+			this.ns.nuke(this.hostname)
+
+			return true
 		} catch (e) {
 			this.ns.print(e)
+			return false
 		}
 	}
 }
