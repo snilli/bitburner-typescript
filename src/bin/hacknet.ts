@@ -8,9 +8,15 @@ import { NS } from '@ns'
  * @returns An array of numbers from start to end, with a step of 1.
  */
 function range(start: number, end: number, step = 1): number[] {
-	return Array.from(Array(end - start).keys())
-		.filter((_, idx) => idx % step === 0)
-		.map((v) => v + start)
+	const resMod = step - 1
+	const numbers = []
+	for (const idx of Array(end - start).keys()) {
+		if (idx % step === resMod) {
+			numbers.push(idx)
+		}
+	}
+
+	return numbers
 }
 
 /**

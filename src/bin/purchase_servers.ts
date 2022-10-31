@@ -7,8 +7,7 @@ function removeServer(ns: NS, server: string): void {
 
 function buyServer(ns: NS, ram: number): string {
 	const serverName = generateRandomString()
-	const server = ns.purchaseServer(serverName, 2 ** ram)
-	return server
+	return ns.purchaseServer(serverName, 2 ** ram)
 }
 
 export function main(ns: NS): void {

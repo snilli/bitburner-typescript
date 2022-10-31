@@ -159,19 +159,19 @@ export class ServerInfo {
 				return false
 			}
 
-			if (programs.ftp) {
+			if (programs.ftp && !ports.ftp) {
 				this.ns.ftpcrack(this.hostname)
 			}
-			if (programs.ssh) {
+			if (programs.ssh && !ports.ssh) {
 				this.ns.brutessh(this.hostname)
 			}
-			if (programs.smtp) {
+			if (programs.smtp && !ports.smtp) {
 				this.ns.relaysmtp(this.hostname)
 			}
-			if (programs.http) {
+			if (programs.http && !ports.http) {
 				this.ns.httpworm(this.hostname)
 			}
-			if (programs.sql) {
+			if (programs.sql && !ports.sql) {
 				this.ns.sqlinject(this.hostname)
 			}
 
